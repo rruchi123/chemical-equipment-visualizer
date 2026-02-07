@@ -1,43 +1,59 @@
 # Chemical Equipment Parameter Visualizer
 
-This is a full-stack application that allows users to upload chemical equipment CSV data, analyze key parameters, and visualize results using both Web and Desktop frontends connected to a common Django REST backend.
+A full-stack data visualization system that enables users to upload chemical equipment CSV datasets, analyze key parameters, and visualize insights through both Web and Desktop frontends connected to a shared Django REST backend.
+
+This project was developed as part of the FOSSEE Screening Task and demonstrates end-to-end data handling, API integration, and UI consistency across platforms.
 
 ---
 
 ## Features
 
-- CSV upload and processing
+- CSV upload and validation
 - Data analytics:
    - Total equipment count
    - Average flow rate
    - Average pressure
    - Average temperature
    - Equipment type distribution
-- Interactive charts:
-   - Chart.js (Web)
-   - Matplotlib (Desktop)
-- Upload history (last 5 datasets)
-- PDF report generation
-- Basic authentication
-- Shared backend for web and desktop applications
+- Data visualization:
+   - Chart.js (Web frontend)
+   - Matplotlib (Desktop frontend)
+- Upload history (last 5 datasets stored)
+- PDF report generation for each upload
+- Basic authentication via environment variables
+- Single Django backend shared by Web & Desktop apps
 
 ---
 
+## Project Architecture
+
+- **Backend ** handles CSV ingestion, analytics, persistence, history, and PDF generation.
+- **Frontend Web** consumes REST APIs for visualization and reporting.
+- **Frontend Desktop **consumes the same APIs for identical analytics and charts.
+
+---
+
+Task Requirement Mapping (FOSSEE)
+```
+| Task Requirement                    | Implementation          |
+| ----------------------------------- | ----------------------- |
+| CSV Upload (Web & Desktop)          | ✅ Implemented           |
+| Common Backend API                  | ✅ Django REST           |
+| Data Summary API                    | ✅ Implemented           |
+| Chart Visualization (Web + Desktop) | ✅ Chart.js + Matplotlib |
+| Store Last 5 Uploaded Datasets      | ✅ Implemented           |
+| PDF Report Generation               | ✅ Implemented           |
+| Authentication                      | ✅ Basic Auth            |
+| Provided Sample CSV Used            | ✅ Included              |
+
+```
+
 ## Technologies Used
 
-- Python
-- Django
-- Django REST Framework
-- Pandas
-- SQLite
-- ReportLab
-- React.js
-- Vite
-- Chart.js
-- PyQt5
-- Matplotlib
-- Requests
-- Git & GitHub
+- **Backend:** Python, Django, Django REST Framework, Pandas, SQLite, ReportLab
+- **Web Frontend:** React.js, Vite, Chart.js
+- **Desktop Frontend:** PyQt5, Matplotlib, Requests
+- **Version Control:** Git & GitHub
 
 ---
 
@@ -98,6 +114,15 @@ This is a full-stack application that allows users to upload chemical equipment 
 
 ---
 
+## Demo Flow
+
+- 1.Start Django backend
+- 2.Launch web or desktop frontend
+- 3.Upload sample_equipment_data.csv
+- 4.View analytics summary & charts
+- 5.Check upload history
+- 6.Download PDF report
+
 ## Sample Data
 
 - Use the provided sample_equipment_data.csv file for testing and demonstration.
@@ -107,12 +132,17 @@ This is a full-stack application that allows users to upload chemical equipment 
 ## Authentication
 
 - Basic Authentication is used
-- Credentials are managed via environment variables
+- Credentials are passed securely via environment variables
+- No credentials are hardcoded in the repository
 
 ---
 
 ## Notes
 
-- Both web and desktop frontends consume the same backend APIs
-- Database is generated locally using migrations
-- UI focuses on clarity and functionality
+- Both frontends share the same REST APIs
+- Backend database is generated locally via migrations
+- Focus is on functional clarity, data correctness, and cross-platform consistency
+
+---
+## Author
+**Ruchi Raj**
