@@ -26,14 +26,27 @@ This project was developed as part of the FOSSEE Screening Task and demonstrates
 ---
 
 ## Project Architecture
+```
+chemical-equipment-visualizer/
+│
+├── backend/                 # Django REST backend
+│   ├── equipment/           # Models, serializers, views
+│   └── server/              # Project settings & URLs
+│
+├── frontend-web/             # React + Chart.js frontend
+│
+├── frontend-desktop/         # PyQt5 + Matplotlib desktop app
+│
+└── sample_equipment_data.csv # Sample dataset for demo
 
-- **Backend ** handles CSV ingestion, analytics, persistence, history, and PDF generation.
+```
+- **Backend** handles CSV ingestion, analytics, persistence, history, and PDF generation.
 - **Frontend Web** consumes REST APIs for visualization and reporting.
-- **Frontend Desktop **consumes the same APIs for identical analytics and charts.
+- **Frontend Desktop** consumes the same APIs for identical analytics and charts.
 
 ---
 
-Task Requirement Mapping (FOSSEE)
+## Task Requirement Mapping (FOSSEE)
 ```
 | Task Requirement                    | Implementation          |
 | ----------------------------------- | ----------------------- |
