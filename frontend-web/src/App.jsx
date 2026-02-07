@@ -58,8 +58,8 @@ function App() {
     }
 
     if (!username || !password) {
-    alert("API credentials not set in environment variables");
-    return;
+      alert("API credentials not set in environment variables");
+      return;
     }
 
     const formData = new FormData();
@@ -90,12 +90,63 @@ function App() {
         {
           label: "Equipment Count",
           data: Object.values(summary.type_distribution),
+          backgroundColor: [
+            "#4e79a7",
+            "#59a14f",
+            "#f28e2b",
+            "#e15759",
+            "#76b7b2",
+            "#edc949",
+          ],
+          borderColor: "#333",
+          borderWidth: 1,
         },
       ],
     };
 
+
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#e0e0e0",
+          font: {
+            size: 12,
+          },
+        },
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        ticks: {
+          color: "#e0e0e0",
+          font: {
+            size: 12,
+          },
+          stepSize: 1,
+        },
+        grid: {
+          color: "rgba(255,255,255,0.05)",
+        },
+      },
+    },
+  };
+
+
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px" }} className="app-container">
       <h2>Chemical Equipment Parameter Visualizer</h2>
 
       <input type="file" accept=".csv" onChange={handleFileChange} />
@@ -105,38 +156,53 @@ function App() {
       <p>{message}</p>
 
       {summary && (
-        <>
+        <div className="section">
           <h3>Summary</h3>
-          <p>Total Equipment: {summary.total_count}</p>
-          <p>Avg Flowrate: {summary.avg_flowrate.toFixed(2)}</p>
-          <p>Avg Pressure: {summary.avg_pressure.toFixed(2)}</p>
-          <p>Avg Temperature: {summary.avg_temperature.toFixed(2)}</p>
+          <div className="summary-grid">
+            <div className="summary-item">
+              <strong>Total Equipment:</strong> {summary.total_count}
+            </div>
+            <div className="summary-item">
+              <strong>Avg Flowrate:</strong> {summary.avg_flowrate.toFixed(2)}
+            </div>
+            <div className="summary-item">
+              <strong>Avg Pressure:</strong> {summary.avg_pressure.toFixed(2)}
+            </div>
+            <div className="summary-item">
+              <strong>Avg Temperature:</strong> {summary.avg_temperature.toFixed(2)}
+            </div>
+          </div>
+
 
           <h3>Equipment Type Distribution</h3>
-          <Bar data={chartData} />
-        </>
+          <div style={{ height: "320px", marginTop: "10px" }}>
+            <Bar data={chartData} options={chartOptions} />
+          </div>
+        </div>
       )}
 
       <hr />
 
-      <h3>Upload History</h3>
-      <ul>
-        {history.map((item) => (
-          <li key={item.id}>
-            {item.file_name} — {item.uploaded_at}{" "}
-            <button
-              onClick={() =>
-                window.open(
-                  `http://127.0.0.1:8000/api/pdf/${item.id}/`,
-                  "_blank"
-                )
-              }
-            >
-              Download PDF
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="section">
+        <h3>Upload History</h3>
+        <ul>
+          {history.map((item) => (
+            <li key={item.id}>
+              {item.file_name} — {item.uploaded_at}{" "}
+              <button
+                onClick={() =>
+                  window.open(
+                    `http://127.0.0.1:8000/api/pdf/${item.id}/`,
+                    "_blank"
+                  )
+                }
+              >
+                Download PDF
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
     </div>
   );
