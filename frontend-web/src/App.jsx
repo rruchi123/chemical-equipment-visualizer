@@ -17,8 +17,11 @@ ChartJS.register(
   Legend
 );
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const username = import.meta.env.VITE_API_USERNAME;
 const password = import.meta.env.VITE_API_PASSWORD;
+
 
 const AUTH_HEADER = {
   Authorization: "Basic " + btoa(`${username}:${password}`),
@@ -33,7 +36,7 @@ function App() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/history/", {
+      const res = await fetch(`${API_BASE_URL}/api/history/`, {
         headers: AUTH_HEADER,
       });
       const data = await res.json();
@@ -66,7 +69,7 @@ function App() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/upload/", {
+      const response = await fetch(`${API_BASE_URL}/api/upload/`, {
         method: "POST",
         headers: AUTH_HEADER,
         body: formData,
@@ -192,7 +195,7 @@ function App() {
               <button
                 onClick={() =>
                   window.open(
-                    `http://127.0.0.1:8000/api/pdf/${item.id}/`,
+                    `${API_BASE_URL}/api/pdf/${item.id}/`,
                     "_blank"
                   )
                 }
