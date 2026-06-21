@@ -20,7 +20,7 @@ This project was developed as part of the FOSSEE Screening Task and demonstrates
    - Matplotlib (Desktop frontend)
 - Upload history (last 5 datasets stored)
 - PDF report generation for each upload
-- Basic authentication via environment variables
+- RESTful API integration between frontend and backend
 - Single Django backend shared by Web & Desktop apps
 
 ---
@@ -56,7 +56,7 @@ chemical-equipment-visualizer/
 | Chart Visualization (Web + Desktop) | ✅ Chart.js + Matplotlib |
 | Store Last 5 Uploaded Datasets      | ✅ Implemented           |
 | PDF Report Generation               | ✅ Implemented           |
-| Authentication                      | ✅ Basic Auth            |
+| REST API Communication              | ✅ Implemented           |
 | Provided Sample CSV Used            | ✅ Included              |
 
 ```
@@ -79,7 +79,6 @@ chemical-equipment-visualizer/
    .venv\Scripts\activate
    pip install django djangorestframework pandas reportlab django-cors-headers
    python manage.py migrate
-   python manage.py createsuperuser
    python manage.py runserver
 
    ```
@@ -102,8 +101,7 @@ chemical-equipment-visualizer/
    ```
    Create a .env file inside frontend-web/:
    ```
-   VITE_API_USERNAME=yourusername
-   VITE_API_PASSWORD=yourpassword
+   VITE_API_BASE_URL=http://127.0.0.1:8000
 
    ```
 3. Desktop Frontend Setup (PyQt5)
@@ -144,9 +142,9 @@ chemical-equipment-visualizer/
 
 ## Authentication
 
-- Basic Authentication is used
-- Credentials are passed securely via environment variables
-- No credentials are hardcoded in the repository
+- The desktop application uses environment variables for authentication during local execution.
+- The web application communicates directly with the deployed REST API.
+- No credentials are hardcoded in the repository.
 
 ---
 
