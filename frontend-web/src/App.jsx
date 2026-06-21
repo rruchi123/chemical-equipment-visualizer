@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import {
   Chart as ChartJS,
   BarElement,
@@ -7,7 +8,17 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import UploadCard from "./components/UploadCard";
+import SummaryCards from "./components/SummaryCards";
+import GraphCard from "./components/GraphCard";
+import DashboardHeader from "./components/DashboardHeader";
+import Insights from "./components/Insights";
+import Footer from "./components/Footer";
+
+import "./App.css";
 
 ChartJS.register(
   BarElement,
@@ -17,30 +28,39 @@ ChartJS.register(
   Legend
 );
 
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const username = import.meta.env.VITE_API_USERNAME;
 const password = import.meta.env.VITE_API_PASSWORD;
-
 
 const AUTH_HEADER = {
   Authorization: "Basic " + btoa(`${username}:${password}`),
 };
 
-
 function App() {
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   const [file, setFile] = useState(null);
+
   const [message, setMessage] = useState("");
+
   const [summary, setSummary] = useState(null);
+
   const [history, setHistory] = useState([]);
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/history/`, {
-        headers: AUTH_HEADER,
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/api/history/`,
+        {
+          headers: AUTH_HEADER,
+        }
+      );
+
       const data = await res.json();
+
       setHistory(data);
+
     } catch (err) {
       console.error("Failed to load history");
     }
@@ -55,35 +75,50 @@ function App() {
   };
 
   const handleUpload = async () => {
+
     if (!file) {
       setMessage("Please select a CSV file first.");
       return;
     }
 
     if (!username || !password) {
-      alert("API credentials not set in environment variables");
+      alert("API credentials are missing.");
       return;
     }
 
     const formData = new FormData();
+
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/upload/`, {
-        method: "POST",
-        headers: AUTH_HEADER,
-        body: formData,
-      });
 
-      if (!response.ok) throw new Error();
+      const response = await fetch(
+        `${API_BASE_URL}/api/upload/`,
+        {
+          method: "POST",
+          headers: AUTH_HEADER,
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error();
+      }
 
       const data = await response.json();
+
       setSummary(data);
+
       setMessage("CSV uploaded successfully!");
+
       fetchHistory();
-    } catch {
+
+    } catch (err) {
+
       setMessage("Error uploading CSV");
+
     }
+
   };
 
   const chartData =
@@ -94,117 +129,101 @@ function App() {
           label: "Equipment Count",
           data: Object.values(summary.type_distribution),
           backgroundColor: [
-            "#4e79a7",
-            "#59a14f",
-            "#f28e2b",
-            "#e15759",
-            "#76b7b2",
-            "#edc949",
+            "#3B82F6",
+            "#06B6D4",
+            "#10B981",
+            "#F59E0B",
+            "#EF4444",
+            "#8B5CF6",
           ],
-          borderColor: "#333",
-          borderWidth: 1,
+          borderRadius: 8,
         },
       ],
     };
 
-
-
   const chartOptions = {
     responsive: true,
+
     maintainAspectRatio: false,
+
     plugins: {
+
       legend: {
         display: false,
       },
-      title: {
-        display: false,
-      },
+
     },
+
     scales: {
+
       x: {
         ticks: {
-          color: "#e0e0e0",
-          font: {
-            size: 12,
-          },
+          color: "#dbeafe",
         },
+
         grid: {
           display: false,
         },
       },
+
       y: {
+
         ticks: {
-          color: "#e0e0e0",
-          font: {
-            size: 12,
-          },
+          color: "#dbeafe",
           stepSize: 1,
         },
+
         grid: {
-          color: "rgba(255,255,255,0.05)",
+          color: "rgba(255,255,255,0.08)",
         },
       },
+
     },
+
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   return (
-    <div style={{ padding: "20px" }} className="app-container">
-      <h2>Chemical Equipment Parameter Visualizer</h2>
+    <div className="app">
 
-      <input type="file" accept=".csv" onChange={handleFileChange} />
-      <br /><br />
-      <button onClick={handleUpload}>Upload CSV</button>
+      <Navbar toggleSidebar={toggleSidebar} />
 
-      <p>{message}</p>
+      <div className="dashboard-layout">
 
-      {summary && (
-        <div className="section">
-          <h3>Summary</h3>
-          <div className="summary-grid">
-            <div className="summary-item">
-              <strong>Total Equipment:</strong> {summary.total_count}
-            </div>
-            <div className="summary-item">
-              <strong>Avg Flowrate:</strong> {summary.avg_flowrate.toFixed(2)}
-            </div>
-            <div className="summary-item">
-              <strong>Avg Pressure:</strong> {summary.avg_pressure.toFixed(2)}
-            </div>
-            <div className="summary-item">
-              <strong>Avg Temperature:</strong> {summary.avg_temperature.toFixed(2)}
-            </div>
-          </div>
+        <Sidebar
+          history={history}
+          isOpen={sidebarOpen}
+          apiUrl={API_BASE_URL}
+        />
 
+        <main className="dashboard-content">
+          <DashboardHeader />
+          <UploadCard
+            file={file}
+            message={message}
+            handleFileChange={handleFileChange}
+            handleUpload={handleUpload}
+          />
 
-          <h3>Equipment Type Distribution</h3>
-          <div style={{ height: "320px", marginTop: "10px" }}>
-            <Bar data={chartData} options={chartOptions} />
-          </div>
-        </div>
-      )}
+          <SummaryCards
+            summary={summary}
+          />
 
-      <hr />
+          <GraphCard
+            summary={summary}
+            chartData={chartData}
+            chartOptions={chartOptions}
+          />
 
-      <div className="section">
-        <h3>Upload History</h3>
-        <ul>
-          {history.map((item) => (
-            <li key={item.id}>
-              {item.file_name} — {item.uploaded_at}{" "}
-              <button
-                onClick={() =>
-                  window.open(
-                    `${API_BASE_URL}/api/pdf/${item.id}/`,
-                    "_blank"
-                  )
-                }
-              >
-                Download PDF
-              </button>
-            </li>
-          ))}
-        </ul>
+          <Insights summary={summary} />
+
+          <Footer />
+
+        </main>
+
       </div>
 
     </div>
