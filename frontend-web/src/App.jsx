@@ -29,12 +29,7 @@ ChartJS.register(
 );
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const username = import.meta.env.VITE_API_USERNAME;
-const password = import.meta.env.VITE_API_PASSWORD;
 
-const AUTH_HEADER = {
-  Authorization: "Basic " + btoa(`${username}:${password}`),
-};
 
 function App() {
 
@@ -50,12 +45,7 @@ function App() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/history/`,
-        {
-          headers: AUTH_HEADER,
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/history/`);
 
       const data = await res.json();
 
@@ -81,10 +71,7 @@ function App() {
       return;
     }
 
-    if (!username || !password) {
-      alert("API credentials are missing.");
-      return;
-    }
+    
 
     const formData = new FormData();
 
@@ -92,14 +79,10 @@ function App() {
 
     try {
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/upload/`,
-        {
-          method: "POST",
-          headers: AUTH_HEADER,
-          body: formData,
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/upload/`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error();
